@@ -1,4 +1,3 @@
-<!doctype html>
 <html lang="en">
 <head>
     <!-- Required meta tags -->
@@ -8,6 +7,8 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script type="text/javascript" src="data.js"></script>
+
 
     <title>07.04. 4C homework!</title>
 </head>
@@ -66,6 +67,21 @@
             <input class="btn btn-primary btn-block" type="reset" value="Reset table">
         </div>
     </div>
+    <div class="container mb-3 mt-3">
+     <div class="row">
+        <p>Price</p>
+        <div class="col ml-3">
+        <label for="price-from">from: </label>
+            <input  type="text" name="price-from" id="price-from">
+            
+ 
+         <label for="price-to">to: </label>
+             <input type="text" name="price-to" id="price-to">
+             
+        <button id="button-price" class="btn btn-primary">Price filter</button>
+        </div>
+        </div>
+    </div>
 </div>
 <div class="container" id="data-content">
     <table class="table table-striped">
@@ -78,6 +94,7 @@
             <th scope="col">Offer type</th>
             <th scope="col">Energy class</th>
         </tr>
+           
         </thead>
         <tbody>
         </tbody>
@@ -98,7 +115,7 @@
         crossorigin="anonymous"></script>
 <script>
     // object with loaded data - DO NOT change
-    let jsonData = [];
+    const jsonData = JSON.parse(data);
     // empty data table
     function emptyTable() {
       $('#data-content tbody').empty();
@@ -142,28 +159,88 @@
       $('#data-content tbody').append(rowContent);
     }
   $( document ).ready(function() {
-    $.getJSON("data.json")
-    .done(function (json) {
-      jsonData = json;
-      for (const d of json) {
-        addRow(d);
-      }
-      prepareSelects();
-    });
-    $('button[type="reset"]').click(function () {
-      emptyTable();
+    for (const d of jsonData) {
+      addRow(d);
+    }
+    prepareSelects();
+    $(':reset').click(function () {
+      emptyTable();      
       for (const d of jsonData) {
         addRow(d);
       }
     });
-    // Here will fallow function for filtering
+    // Here will fallow function for filtering   
+    
+    // filtrování type
+   $('#button-price').click(function () {
+      const priceFrom = $("#price-from").val();
+      const priceTo = $('#price-to').val();
+      emptyTable();
+       if($.isNumeric(priceFrom) && $.isNumeric(priceTo)){
+       
+       for (const d of jsonData) {
+       
+      if (d.price >= parseInt(priceFrom) && d.price <= parseInt(priceTo)){
+                                                        
+        addRow(d);
+      } }               
+      }else{
+      alert("is not number");
+      }
+   console.log(jsonData);
+    }); 
+    
     $('#type-select').change(function () {
       const selectedType = $(this).find('option:selected');
-      alert(`Set type: ${selectedType.text()}`);
       emptyTable();
-      // TODO: filter data
+       for (const d of jsonData) {
+      if (d.type == selectedType.text()){
+        addRow(d);
+      } }
+   console.log(jsonData);
+    });
+    
+    // filtrování subtype
+    
+      $('#sub-type-select').change(function () {
+      const selectedSubTypes = $(this).find('option:selected');
+      emptyTable();
+       for (const d of jsonData) {
+      if (d.subtype == selectedSubTypes.text()){
+        addRow(d);
+      } }
+
       console.log(jsonData);
     });
+    
+    // filtrování auction
+    
+      $('#offer-type-select').change(function () {
+      const selectedofferType = $(this).find('option:selected');
+      emptyTable();
+       for (const d of jsonData) {
+      if (d.offerType == selectedofferType.text()){
+        addRow(d);
+      } }
+      console.log(jsonData);
+    });
+    
+    // filtrování energy class
+    
+      $('#energy-class-select').change(function () {
+      const selectedType = $(this).find('option:selected');
+      emptyTable();
+       for (const d of jsonData) {
+      if (d.energyClass == selectedType.text()){
+        addRow(d);
+      } }     
+      console.log(jsonData);
+    });
+    
+
+    
+    
+    
   });
 </script>
 </body>
